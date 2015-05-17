@@ -3,10 +3,9 @@
 #   - rename of config.h to gsm_config.h
 #   - compile warning fixes
 #   - man page fixes
-
 diff -urNad gsm-1.0-pl13-orig/Makefile gsm-1.0-pl13/Makefile
 --- gsm-1.0-pl13-orig/Makefile	2006-04-26 22:14:26.000000000 +0300
-+++ gsm-1.0-pl13/Makefile	2012-08-30 22:31:09.000000000 +0300
++++ gsm-1.0-pl13/Makefile	2015-05-17 12:49:18.000000000 +0300
 @@ -44,7 +44,7 @@
  # CCFLAGS 	= -c -O
  
@@ -70,31 +69,37 @@ diff -urNad gsm-1.0-pl13-orig/Makefile gsm-1.0-pl13/Makefile
  		@-echo $(ROOT): Done.
  
  tst:		$(TST)/lin2cod $(TST)/cod2lin $(TOAST) $(TST)/test-result
-@@ -299,6 +301,11 @@
+@@ -299,7 +301,12 @@
  
  # The basic API: libgsm
  
-+$(LIBGSMSO):	$(LIB) $(GSM_OBJECTS)
+-$(LIBGSM):	$(LIB) $(GSM_OBJECTS)
++$(LIBGSMSO):	$(GSM_OBJECTS)
 +		$(LD) -shared -Wl,-soname,libgsm.so.1 -o $@.1.0.13 $(GSM_OBJECTS) -lc
 +		$(LN) libgsm.so.1.0.13 $@.1
 +		$(LN) libgsm.so.1.0.13 $@
 +
- $(LIBGSM):	$(LIB) $(GSM_OBJECTS)
++$(LIBGSM):	$(GSM_OBJECTS)
  		-rm $(RMFLAGS) $(LIBGSM)
  		$(AR) $(ARFLAGS) $(LIBGSM) $(GSM_OBJECTS)
-@@ -308,22 +315,21 @@
+ 		$(RANLIB) $(LIBGSM)
+@@ -307,23 +314,22 @@
+ 
  # Toast, Untoast and Tcat -- the compress-like frontends to gsm.
  
- $(TOAST):	$(BIN) $(TOAST_OBJECTS) $(LIBGSM)
+-$(TOAST):	$(BIN) $(TOAST_OBJECTS) $(LIBGSM)
 -		$(LD) $(LFLAGS) -o $(TOAST) $(TOAST_OBJECTS) $(LIBGSM) $(LDLIB)
++$(TOAST):	$(TOAST_OBJECTS) $(LIBGSM)
 +		$(LD) $(LFLAGS) -o $(TOAST) $(TOAST_OBJECTS) $(LIBGSMSO) $(LDLIB)
  
- $(UNTOAST):	$(BIN) $(TOAST)
+-$(UNTOAST):	$(BIN) $(TOAST)
++$(UNTOAST):	$(TOAST)
  		-rm $(RMFLAGS) $(UNTOAST)
 -		$(LN) $(TOAST) $(UNTOAST)
 +		$(LN) toast $(UNTOAST)
  
- $(TCAT):	$(BIN) $(TOAST)
+-$(TCAT):	$(BIN) $(TOAST)
++$(TCAT):	$(TOAST)
  		-rm $(RMFLAGS) $(TCAT)
 -		$(LN) $(TOAST) $(TCAT)
 +		$(LN) toast $(TCAT)
@@ -195,7 +200,7 @@ diff -urNad gsm-1.0-pl13-orig/inc/config.h gsm-1.0-pl13/inc/config.h
 - * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
 - */
 -
--/*$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.13.diff,v 1.2 2012/08/30 20:14:45 gsotirov Exp $*/
+-/*$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.13.diff,v 1.3 2015/05/17 09:54:12 gsotirov Exp $*/
 -
 -#ifndef	CONFIG_H
 -#define	CONFIG_H
@@ -226,9 +231,34 @@ diff -urNad gsm-1.0-pl13-orig/inc/config.h gsm-1.0-pl13/inc/config.h
 -/*efine	HAS_UTIMEUSEC   1		/* microseconds in utimbuf?	*/
 -
 -#endif	/* CONFIG_H */
+diff -urNad gsm-1.0-pl13-orig/inc/gsm.h gsm-1.0-pl13/inc/gsm.h
+--- gsm-1.0-pl13-orig/inc/gsm.h	2006-04-26 22:14:25.000000000 +0300
++++ gsm-1.0-pl13/inc/gsm.h	2015-05-17 12:43:53.000000000 +0300
+@@ -54,6 +54,10 @@
+ #define	GSM_OPT_FRAME_INDEX	5
+ #define	GSM_OPT_FRAME_CHAIN	6
+ 
++#ifdef __cplusplus
++extern "C" {
++#endif
++
+ extern gsm  gsm_create 	GSM_P((void));
+ extern void gsm_destroy GSM_P((gsm));	
+ 
+@@ -66,6 +70,10 @@
+ extern int  gsm_explode GSM_P((gsm, gsm_byte   *, gsm_signal *));
+ extern void gsm_implode GSM_P((gsm, gsm_signal *, gsm_byte   *));
+ 
++#ifdef __cplusplus
++}
++#endif
++
+ #undef	GSM_P
+ 
+ #endif	/* GSM_H */
 diff -urNad gsm-1.0-pl13-orig/inc/gsm_config.h gsm-1.0-pl13/inc/gsm_config.h
 --- gsm-1.0-pl13-orig/inc/gsm_config.h	1970-01-01 02:00:00.000000000 +0200
-+++ gsm-1.0-pl13/inc/gsm_config.h	2006-04-26 22:14:26.000000000 +0300
++++ gsm-1.0-pl13/inc/gsm_config.h	2015-05-17 12:43:53.000000000 +0300
 @@ -0,0 +1,37 @@
 +/*
 + * Copyright 1992 by Jutta Degener and Carsten Bormann, Technische
@@ -236,7 +266,7 @@ diff -urNad gsm-1.0-pl13-orig/inc/gsm_config.h gsm-1.0-pl13/inc/gsm_config.h
 + * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
 + */
 +
-+/*$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.13.diff,v 1.2 2012/08/30 20:14:45 gsotirov Exp $*/
++/*$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.13.diff,v 1.3 2015/05/17 09:54:12 gsotirov Exp $*/
 +
 +#ifndef	CONFIG_H
 +#define	CONFIG_H
@@ -267,34 +297,9 @@ diff -urNad gsm-1.0-pl13-orig/inc/gsm_config.h gsm-1.0-pl13/inc/gsm_config.h
 +/*efine	HAS_UTIMEUSEC   1		/* microseconds in utimbuf?	*/
 +
 +#endif	/* CONFIG_H */
-diff -urNad gsm-1.0-pl13-orig/inc/gsm.h gsm-1.0-pl13/inc/gsm.h
---- gsm-1.0-pl13-orig/inc/gsm.h	2006-04-26 22:14:25.000000000 +0300
-+++ gsm-1.0-pl13/inc/gsm.h	2012-08-30 22:31:23.000000000 +0300
-@@ -54,6 +54,10 @@
- #define	GSM_OPT_FRAME_INDEX	5
- #define	GSM_OPT_FRAME_CHAIN	6
- 
-+#ifdef __cplusplus
-+extern "C" {
-+#endif
-+
- extern gsm  gsm_create 	GSM_P((void));
- extern void gsm_destroy GSM_P((gsm));	
- 
-@@ -66,6 +70,10 @@
- extern int  gsm_explode GSM_P((gsm, gsm_byte   *, gsm_signal *));
- extern void gsm_implode GSM_P((gsm, gsm_signal *, gsm_byte   *));
- 
-+#ifdef __cplusplus
-+}
-+#endif
-+
- #undef	GSM_P
- 
- #endif	/* GSM_H */
 diff -urNad gsm-1.0-pl13-orig/inc/toast.h gsm-1.0-pl13/inc/toast.h
 --- gsm-1.0-pl13-orig/inc/toast.h	2006-04-26 22:14:26.000000000 +0300
-+++ gsm-1.0-pl13/inc/toast.h	2012-08-30 22:31:23.000000000 +0300
++++ gsm-1.0-pl13/inc/toast.h	2015-05-17 12:43:53.000000000 +0300
 @@ -9,18 +9,19 @@
  #ifndef	TOAST_H
  #define	TOAST_H				/* Guard against multiple includes */
@@ -331,7 +336,7 @@ diff -urNad gsm-1.0-pl13-orig/inc/toast.h gsm-1.0-pl13/inc/toast.h
  #ifndef	S_ISREG
 diff -urNad gsm-1.0-pl13-orig/man/gsm.3 gsm-1.0-pl13/man/gsm.3
 --- gsm-1.0-pl13-orig/man/gsm.3	2006-04-26 22:14:25.000000000 +0300
-+++ gsm-1.0-pl13/man/gsm.3	2012-08-30 22:31:23.000000000 +0300
++++ gsm-1.0-pl13/man/gsm.3	2015-05-17 12:43:53.000000000 +0300
 @@ -3,7 +3,6 @@
  .\" Universitaet Berlin.  See the accompanying file "COPYRIGHT" for
  .\" details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
@@ -342,7 +347,7 @@ diff -urNad gsm-1.0-pl13-orig/man/gsm.3 gsm-1.0-pl13/man/gsm.3
  gsm_create, gsm_destroy, gsm_encode, gsm_decode \(em GSM\ 06.10 lossy sound compression
 diff -urNad gsm-1.0-pl13-orig/man/gsm_explode.3 gsm-1.0-pl13/man/gsm_explode.3
 --- gsm-1.0-pl13-orig/man/gsm_explode.3	2006-04-26 22:14:25.000000000 +0300
-+++ gsm-1.0-pl13/man/gsm_explode.3	2012-08-30 22:31:23.000000000 +0300
++++ gsm-1.0-pl13/man/gsm_explode.3	2015-05-17 12:43:53.000000000 +0300
 @@ -3,7 +3,6 @@
  .\" Universitaet Berlin.  See the accompanying file "COPYRIGHT" for
  .\" details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
@@ -353,7 +358,7 @@ diff -urNad gsm-1.0-pl13-orig/man/gsm_explode.3 gsm-1.0-pl13/man/gsm_explode.3
  gsm_explode, gsm_implode \(em GSM\ 06.10 supplementary
 diff -urNad gsm-1.0-pl13-orig/man/gsm_option.3 gsm-1.0-pl13/man/gsm_option.3
 --- gsm-1.0-pl13-orig/man/gsm_option.3	2006-04-26 22:14:25.000000000 +0300
-+++ gsm-1.0-pl13/man/gsm_option.3	2012-08-30 22:31:23.000000000 +0300
++++ gsm-1.0-pl13/man/gsm_option.3	2015-05-17 12:43:54.000000000 +0300
 @@ -3,7 +3,6 @@
  .\" Universitaet Berlin.  See the accompanying file "COPYRIGHT" for
  .\" details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
@@ -452,7 +457,7 @@ diff -urNad gsm-1.0-pl13-orig/man/gsm_option.3 gsm-1.0-pl13/man/gsm_option.3
  previous value of the option otherwise.
 diff -urNad gsm-1.0-pl13-orig/man/gsm_print.3 gsm-1.0-pl13/man/gsm_print.3
 --- gsm-1.0-pl13-orig/man/gsm_print.3	2006-04-26 22:14:25.000000000 +0300
-+++ gsm-1.0-pl13/man/gsm_print.3	2012-08-30 22:31:23.000000000 +0300
++++ gsm-1.0-pl13/man/gsm_print.3	2015-05-17 12:43:54.000000000 +0300
 @@ -3,7 +3,6 @@
  .\" Universitaet Berlin.  See the accompanying file "COPYRIGHT" for
  .\" details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
@@ -463,10 +468,10 @@ diff -urNad gsm-1.0-pl13-orig/man/gsm_print.3 gsm-1.0-pl13/man/gsm_print.3
  gsm_print \(em GSM\ 06.10 supplementary function for debugging
 diff -urNad gsm-1.0-pl13-orig/src/code.c gsm-1.0-pl13/src/code.c
 --- gsm-1.0-pl13-orig/src/code.c	2006-04-26 22:16:50.000000000 +0300
-+++ gsm-1.0-pl13/src/code.c	2012-08-30 22:31:23.000000000 +0300
++++ gsm-1.0-pl13/src/code.c	2015-05-17 12:43:54.000000000 +0300
 @@ -6,11 +6,11 @@
  
- /* $Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.13.diff,v 1.2 2012/08/30 20:14:45 gsotirov Exp $ */
+ /* $Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.13.diff,v 1.3 2015/05/17 09:54:12 gsotirov Exp $ */
  
 -#include	"config.h"
 +#include	"gsm_config.h"
@@ -481,7 +486,7 @@ diff -urNad gsm-1.0-pl13-orig/src/code.c gsm-1.0-pl13/src/code.c
  	extern char	* memcpy P((char *, char *, int));
 diff -urNad gsm-1.0-pl13-orig/src/debug.c gsm-1.0-pl13/src/debug.c
 --- gsm-1.0-pl13-orig/src/debug.c	2006-04-26 22:14:26.000000000 +0300
-+++ gsm-1.0-pl13/src/debug.c	2012-08-30 22:31:23.000000000 +0300
++++ gsm-1.0-pl13/src/debug.c	2015-05-17 12:43:54.000000000 +0300
 @@ -49,7 +49,7 @@
  	fprintf( stderr, "%s [%d .. %d]: ", name, from, to );
  	while (from <= to) {
@@ -510,10 +515,10 @@ diff -urNad gsm-1.0-pl13-orig/src/debug.c gsm-1.0-pl13/src/debug.c
  #endif
 diff -urNad gsm-1.0-pl13-orig/src/gsm_create.c gsm-1.0-pl13/src/gsm_create.c
 --- gsm-1.0-pl13-orig/src/gsm_create.c	2006-04-26 22:14:26.000000000 +0300
-+++ gsm-1.0-pl13/src/gsm_create.c	2012-08-30 22:31:23.000000000 +0300
++++ gsm-1.0-pl13/src/gsm_create.c	2015-05-17 12:43:54.000000000 +0300
 @@ -6,7 +6,7 @@
  
- static char const	ident[] = "$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.13.diff,v 1.2 2012/08/30 20:14:45 gsotirov Exp $";
+ static char const	ident[] = "$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.13.diff,v 1.3 2015/05/17 09:54:12 gsotirov Exp $";
  
 -#include	"config.h"
 +#include	"gsm_config.h"
@@ -522,9 +527,9 @@ diff -urNad gsm-1.0-pl13-orig/src/gsm_create.c gsm-1.0-pl13/src/gsm_create.c
  #include	<string.h>
 diff -urNad gsm-1.0-pl13-orig/src/gsm_destroy.c gsm-1.0-pl13/src/gsm_destroy.c
 --- gsm-1.0-pl13-orig/src/gsm_destroy.c	2006-04-26 22:14:26.000000000 +0300
-+++ gsm-1.0-pl13/src/gsm_destroy.c	2012-08-30 22:31:23.000000000 +0300
++++ gsm-1.0-pl13/src/gsm_destroy.c	2015-05-17 12:43:54.000000000 +0300
 @@ -7,7 +7,7 @@
- /* $Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.13.diff,v 1.2 2012/08/30 20:14:45 gsotirov Exp $ */
+ /* $Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.13.diff,v 1.3 2015/05/17 09:54:12 gsotirov Exp $ */
  
  #include "gsm.h"
 -#include "config.h"
@@ -534,7 +539,7 @@ diff -urNad gsm-1.0-pl13-orig/src/gsm_destroy.c gsm-1.0-pl13/src/gsm_destroy.c
  #ifdef	HAS_STDLIB_H
 diff -urNad gsm-1.0-pl13-orig/src/toast.c gsm-1.0-pl13/src/toast.c
 --- gsm-1.0-pl13-orig/src/toast.c	2006-04-26 22:14:26.000000000 +0300
-+++ gsm-1.0-pl13/src/toast.c	2012-08-30 22:31:23.000000000 +0300
++++ gsm-1.0-pl13/src/toast.c	2015-05-17 12:43:54.000000000 +0300
 @@ -251,8 +251,8 @@
  {
  	char * s;
@@ -601,7 +606,7 @@ diff -urNad gsm-1.0-pl13-orig/src/toast.c gsm-1.0-pl13/src/toast.c
  			progname);
 diff -urNad gsm-1.0-pl13-orig/tls/taste.c gsm-1.0-pl13/tls/taste.c
 --- gsm-1.0-pl13-orig/tls/taste.c	2006-04-26 22:14:25.000000000 +0300
-+++ gsm-1.0-pl13/tls/taste.c	2012-08-30 22:31:23.000000000 +0300
++++ gsm-1.0-pl13/tls/taste.c	2015-05-17 12:43:54.000000000 +0300
 @@ -10,7 +10,7 @@
  #include	<string.h>
  #include	<memory.h>
