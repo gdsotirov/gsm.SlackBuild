@@ -3,6 +3,7 @@
 #   - rename of config.h to gsm_config.h
 #   - compile warning fixes
 #   - man page fixes
+# See http://http.debian.net/debian/pool/main/libg/libgsm/libgsm_1.0.13-4.debian.tar.gz
 diff -urNad gsm-1.0-pl14-orig/Makefile gsm-1.0-pl14/Makefile
 --- gsm-1.0-pl14-orig/Makefile	2006-04-26 22:14:26.000000000 +0300
 +++ gsm-1.0-pl14/Makefile	2015-05-23 15:24:01.000000000 +0300
@@ -200,7 +201,7 @@ diff -urNad gsm-1.0-pl14-orig/inc/config.h gsm-1.0-pl14/inc/config.h
 - * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
 - */
 -
--/*$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.14.diff,v 1.1 2015/05/23 12:46:08 gsotirov Exp $*/
+-/*$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.14.diff,v 1.2 2016/08/17 15:53:02 gsotirov Exp $*/
 -
 -#ifndef	CONFIG_H
 -#define	CONFIG_H
@@ -266,7 +267,7 @@ diff -urNad gsm-1.0-pl14-orig/inc/gsm_config.h gsm-1.0-pl14/inc/gsm_config.h
 + * details.  THERE IS ABSOLUTELY NO WARRANTY FOR THIS SOFTWARE.
 + */
 +
-+/*$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.14.diff,v 1.1 2015/05/23 12:46:08 gsotirov Exp $*/
++/*$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.14.diff,v 1.2 2016/08/17 15:53:02 gsotirov Exp $*/
 +
 +#ifndef	CONFIG_H
 +#define	CONFIG_H
@@ -471,7 +472,7 @@ diff -urNad gsm-1.0-pl14-orig/src/code.c gsm-1.0-pl14/src/code.c
 +++ gsm-1.0-pl14/src/code.c	2015-05-23 15:30:43.000000000 +0300
 @@ -6,7 +6,7 @@
 
- /* $Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.14.diff,v 1.1 2015/05/23 12:46:08 gsotirov Exp $ */
+ /* $Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.14.diff,v 1.2 2016/08/17 15:53:02 gsotirov Exp $ */
  
 -#include	"config.h"
 +#include	"gsm_config.h"
@@ -512,7 +513,7 @@ diff -urNad gsm-1.0-pl14-orig/src/gsm_create.c gsm-1.0-pl14/src/gsm_create.c
 +++ gsm-1.0-pl14/src/gsm_create.c	2015-05-23 15:24:03.000000000 +0300
 @@ -6,7 +6,7 @@
  
- static char const	ident[] = "$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.14.diff,v 1.1 2015/05/23 12:46:08 gsotirov Exp $";
+ static char const	ident[] = "$Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.14.diff,v 1.2 2016/08/17 15:53:02 gsotirov Exp $";
  
 -#include	"config.h"
 +#include	"gsm_config.h"
@@ -523,7 +524,7 @@ diff -urNad gsm-1.0-pl14-orig/src/gsm_destroy.c gsm-1.0-pl14/src/gsm_destroy.c
 --- gsm-1.0-pl14-orig/src/gsm_destroy.c	2006-04-26 22:14:26.000000000 +0300
 +++ gsm-1.0-pl14/src/gsm_destroy.c	2015-05-23 15:24:03.000000000 +0300
 @@ -7,7 +7,7 @@
- /* $Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.14.diff,v 1.1 2015/05/23 12:46:08 gsotirov Exp $ */
+ /* $Header: /var/cvs/repos/public/projects/sh/slackbuilds/l/gsm/Attic/gsm-1.0.14.diff,v 1.2 2016/08/17 15:53:02 gsotirov Exp $ */
  
  #include "gsm.h"
 -#include "config.h"
