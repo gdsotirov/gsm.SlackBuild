@@ -16,4 +16,4 @@ gsm: a library API.  Compression and decompression run faster than realtime
 gsm: on most SPARCstations.  The implementation has been verified against
 gsm: the ETSI standard test patterns.
 gsm:
-gsm: Packaged by Georgi D. Sotirov <gdsotirov@dir.bg>
+gsm: Packaged by Georgi D. Sotirov <gdsotirov@gmail.com>
