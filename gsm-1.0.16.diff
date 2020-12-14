@@ -3,7 +3,7 @@
 #   - rename of config.h to gsm_config.h
 #   - compile warning fixes
 #   - man page fixes
-# See http://http.debian.net/debian/pool/main/libg/libgsm/libgsm_1.0.13-4.debian.tar.gz
+# See https://deb.debian.org/debian/pool/main/libg/libgsm/libgsm_1.0.13-4.debian.tar.gz
 diff -urNad gsm-1.0-pl16-orig/Makefile gsm-1.0-pl16/Makefile
 --- gsm-1.0-pl16-orig/Makefile	2006-04-26 22:14:26.000000000 +0300
 +++ gsm-1.0-pl16/Makefile	2017-03-01 17:20:16.940324608 +0200
